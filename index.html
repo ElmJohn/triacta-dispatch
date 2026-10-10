@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triacta Nigeria Limited — Dispatch Ticket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0E14;
+    --blue:#0B4DA2;
+    --blue-dark:#052C60;
+    --blue-pale:#E4EDF9;
+    --paper:#FFFFFF;
+    --grey:#6B7280;
+    --grey-line:#D7DCE3;
+    --bg:#F2F5FA;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.label{font-family:'Oswald',sans-serif;}
+  .wrap{max-width:640px;margin:0 auto;padding:0 0 60px;}
+
+  /* PIN gate */
+  #gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:var(--blue-dark); padding:24px;
+  }
+  #gate .box{
+    background:var(--paper); border-radius:6px; padding:28px 24px; max-width:340px; width:100%;
+    text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  #gate .co{font-family:'Oswald',sans-serif; font-weight:700; color:var(--blue-dark); font-size:17px; letter-spacing:0.5px;}
+  #gate p{color:var(--grey); font-size:12.5px; margin:6px 0 18px;}
+  #gate input{
+    width:100%; padding:12px; text-align:center; letter-spacing:6px; font-size:20px;
+    border:1.5px solid var(--grey-line); border-radius:4px; font-family:'IBM Plex Mono',monospace;
+  }
+  #gate button{
+    width:100%; margin-top:12px; padding:12px; background:var(--blue); color:#fff; border:none;
+    border-radius:4px; font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:0.4px; font-size:14px;
+  }
+  #gate .gerr{color:#B3261E; font-size:12px; margin-top:8px; display:none;}
+
+  header{
+    background:var(--paper);
+    padding:16px 20px 14px;
+    border-bottom:4px solid var(--blue);
+    display:flex; align-items:center; gap:12px;
+  }
+  .logo{
+    width:52px;height:52px;flex:none;border-radius:6px;background:var(--blue-dark);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.5px;
+  }
+  header .co h1{font-size:16.5px;font-weight:700;margin:0;color:var(--blue-dark);letter-spacing:0.3px;}
+  header .co p{margin:2px 0 0;font-size:11px;color:var(--grey);line-height:1.4;}
+
+  nav{display:flex; background:var(--blue-dark);}
+  nav button{
+    flex:1; padding:12px 4px; background:transparent; border:none; border-right:1px solid rgba(255,255,255,0.15);
+    font-family:'Oswald',sans-serif; font-size:11.5px; font-weight:600; letter-spacing:0.2px;
+    color:rgba(255,255,255,0.6); cursor:pointer;
+  }
+  nav button:last-child{border-right:none;}
+  nav button.active{background:var(--blue); color:#fff;}
+
+  main{padding:18px 20px;}
+  .stat{flex:1; background:var(--blue-pale); border:1px solid var(--blue); border-radius:6px; padding:10px; text-align:center;}
+  .stat-num{font-family:'Oswald',sans-serif; font-weight:700; font-size:18px; color:var(--blue-dark);}
+  .stat-label{font-size:10.5px; color:var(--grey); margin-top:2px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:11.5px;color:var(--grey);margin-bottom:5px;letter-spacing:0.3px;}
+  input, select{
+    width:100%; padding:9px 10px; border:1.5px solid var(--grey-line); background:var(--paper);
+    font-family:'IBM Plex Mono', monospace; font-size:14px; color:var(--ink); border-radius:4px;
+  }
+  input:focus, select:focus{outline:2px solid var(--blue); outline-offset:1px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .err{color:#B3261E; font-size:12px; margin-top:4px; display:none;}
+  .hint{font-size:11.5px; color:var(--grey); margin-top:4px;}
+  .btn{
+    width:100%; padding:13px; background:var(--blue); color:#fff; border:none;
+    font-family:'Oswald',sans-serif; font-weight:600; font-size:14px; letter-spacing:0.5px;
+    cursor:pointer; border-radius:4px; margin-top:6px;
+  }
+  .btn:active{transform:scale(0.99);}
+  .btn.secondary{background:transparent; color:var(--blue-dark); border:1.5px solid var(--blue-dark);}
+  .btn.dark{background:var(--ink);}
+  .btn[disabled]{opacity:0.45;}
+
+  .section-title{
+    font-size:13px; font-weight:600; letter-spacing:0.4px; margin:26px 0 10px;
+    padding-bottom:6px; border-bottom:1.5px solid var(--grey-line); color:var(--blue-dark);
+  }
+  .empty{padding:24px 10px;text-align:center;color:var(--grey);font-size:13px;border:1.5px dashed var(--grey-line);border-radius:4px;}
+
+  .group{
+    border:1.5px solid var(--blue-dark); border-radius:6px; margin-bottom:16px; overflow:hidden;
+  }
+  .group-head{
+    background:var(--blue-dark); color:#fff; padding:8px 12px; font-family:'Oswald',sans-serif;
+    font-size:12.5px; font-weight:600; letter-spacing:0.4px; display:flex; justify-content:space-between;
+  }
+  .group-body{padding:10px; background:var(--blue-pale);}
+
+  .stub{
+    background:var(--paper); border:1.5px solid var(--grey-line); border-radius:4px;
+    margin-bottom:10px; overflow:hidden; cursor:pointer;
+  }
+  .stub-top{padding:10px 12px 8px; display:flex; justify-content:space-between; align-items:flex-start;}
+  .stub-id{font-size:12.5px; font-weight:600; color:var(--blue-dark);}
+  .stub-time{font-size:11px; color:var(--grey);}
+  .stub-body{padding:0 12px 11px; font-size:12.5px; line-height:1.6;}
+  .stub-body .k{color:var(--grey);}
+  .tag{display:inline-block;font-family:'Oswald',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:0.4px;padding:3px 8px;border-radius:3px;}
+  .tag.pending{background:var(--blue-pale); color:var(--blue-dark); border:1px solid var(--blue);}
+  .tag.approved{background:var(--blue); color:#fff;}
+  .tag.delivered{background:var(--ink); color:#fff;}
+  .tag.rejected{background:#fff; color:var(--ink); border:1.5px solid var(--ink); text-decoration:line-through;}
+
+  .detail{background:var(--paper); border:1.5px solid var(--grey-line); border-radius:6px; padding:16px;}
+  .detail-row{display:flex; justify-content:space-between; padding:6px 0; font-size:13.5px; border-bottom:1px solid var(--grey-line);}
+  .detail-row .k{color:var(--grey);}
+  .signoff{margin-top:14px; padding-top:12px; border-top:1.5px dashed var(--grey-line); font-size:12px; color:var(--grey);}
+  .signoff div{margin-bottom:8px;}
+  .signoff .done{color:var(--blue-dark);}
+  .signoff img{display:block; max-width:180px; border:1px solid var(--grey-line); margin-top:4px; background:#fff;}
+  .backbtn{background:none; border:none; color:var(--grey); font-family:'IBM Plex Mono', monospace; font-size:12.5px; cursor:pointer; padding:0 0 14px; display:block;}
+
+  .sigwrap{border:1.5px solid var(--grey-line); border-radius:4px; background:#fff; margin-top:4px;}
+  .sigwrap canvas{width:100%; height:130px; display:block; touch-action:none; border-radius:4px;}
+  .sigrow{display:flex; gap:8px; margin-top:6px;}
+  .sigrow button{flex:none; padding:7px 12px; font-size:11.5px; border:1.5px solid var(--grey-line); background:#fff; border-radius:4px; font-family:'Oswald',sans-serif;}
+
+  .toast{position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 18px; border-radius:4px; font-size:12.5px; z-index:50; opacity:0; transition:opacity .2s;}
+  .toast.show{opacity:1;}
+
+  @media print{
+    body *{visibility:hidden;}
+    #printArea, #printArea *{visibility:visible;}
+    #printArea{position:absolute; top:0; left:0; width:100%; padding:24px;}
+  }
+  #printArea{display:none;}
+  #printArea .pt-head{border-bottom:3px solid #052C60; padding-bottom:10px; margin-bottom:14px; display:flex; gap:12px; align-items:center;}
+  #printArea .pt-logo{width:46px;height:46px;background:#052C60;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:13px;border-radius:5px;}
+  #printArea .pt-co h2{margin:0; font-size:16px; color:#052C60;}
+  #printArea .pt-co p{margin:2px 0 0; font-size:11px; color:#555;}
+  #printArea .pt-id{font-size:12.5px;color:#555;margin-top:6px;}
+  #printArea .pt-row{display:flex; justify-content:space-between; padding:5px 0; font-size:13.5px; border-bottom:1px solid #ccc;}
+  #printArea .pt-sign{margin-top:18px; font-size:12.5px;}
+  #printArea .pt-sign .sline{margin-top:14px;}
+  #printArea .pt-sign .sline img{display:block; max-width:150px; border-bottom:1px solid #000;}
+  #printArea .pt-sign .sline .blank{border-bottom:1px solid #000; width:60%; height:26px;}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <div class="co">TRIACTA NIGERIA LIMITED</div>
+    <p>Enter the access code to open the dispatch ticket system.</p>
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="6" placeholder="••••">
+    <button id="pinBtn">Unlock</button>
+    <div class="gerr" id="pinErr">Incorrect code — try again.</div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none;">
+  <header>
+    <img class="logo" src="data:image/jpeg;base64,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" alt="Triacta logo" style="object-fit:cover;">
+    <div class="co">
+      <h1>TRIACTA NIGERIA LIMITED</h1>
+      <p>KM 8 Hadejia Road, Kano</p>
+    </div>
+    <button id="refreshBtn" title="Refresh" style="margin-left:auto;background:none;border:1.5px solid var(--blue);color:var(--blue-dark);border-radius:4px;padding:8px 10px;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;">&#8635;</button>
+  </header>
+
+  <div id="conn" style="padding:7px 20px;font-size:11.5px;background:#E4EDF9;color:#052C60;border-bottom:1px solid #D7DCE3;">Checking connection…</div>
+
+  <nav>
+    <button class="active" data-role="checker">Checker</button>
+    <button data-role="supervisor">Supervisor</button>
+    <button data-role="destination">Destination</button>
+    <button data-role="reports">Reports</button>
+  </nav>
+
+  <main id="main"></main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="printArea">
+  <div class="pt-head">
+    <img class="pt-logo" src="data:image/jpeg;base64,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" alt="Triacta logo" style="object-fit:cover;">
+    <div class="pt-co">
+      <h2>TRIACTA NIGERIA LIMITED</h2>
+      <p>KM 8 Hadejia Road, Kano</p>
+    </div>
+  </div>
+  <div class="pt-id" id="pt-id"></div>
+  <div id="pt-body" style="margin-top:10px;"></div>
+  <div class="pt-sign">
+    <div class="sline">Checker: <span id="pt-checker"></span></div>
+    <div class="sline">Supervisor signature: <div id="pt-supervisor"></div></div>
+    <div class="sline">Destination signature: <div id="pt-destination"></div></div>
+  </div>
+</div>
+
+<script>
+/* ---------- Access gate (shared PIN — change ACCESS_PIN to whatever you tell the three of you) ---------- */
+const ACCESS_PIN = '1988';
+document.getElementById('pinBtn').addEventListener('click', checkPin);
+document.getElementById('pinInput').addEventListener('keydown', e=>{ if(e.key==='Enter') checkPin(); });
+document.getElementById('refreshBtn').addEventListener('click', ()=>{ toast('Refreshing…'); fetchTickets(); });
+function checkPin(){
+  const v = document.getElementById('pinInput').value.trim();
+  if(v === ACCESS_PIN){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadTickets();
+  } else {
+    document.getElementById('pinErr').style.display = 'block';
+  }
+}
+
+/* ---------- Data ---------- */
+/* PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BETWEEN THE QUOTES BELOW */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKTmRFsxFRutw0emd_dJDGWlLxpxfNdSu6tbAG2jqViZDMPU5OhichYMi6mI5Vn3c/exec';
+
+const DESTINATIONS = [
+  'Batching plant','Asphalt plant','Tage Project','Hadejia site','Gujungu Jahun',
+  'Babura project','Kankia kusada','Zakirai project','Dutse township','Damaturu project',
+  'Kano shuwarin','Zaki project','Azare project','Kaffin Hausa','Fanisau Project',
+  'Azare Concrette batching',"Azare Concrette Jama'are",'Other'
+];
+let tickets = [];
+let role = 'checker';
+let openTicket = null;
+let refreshTimer = null;
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+async function loadTickets(){
+  await fetchTickets();
+  if(!refreshTimer){
+    refreshTimer = setInterval(fetchTickets, 20000);
+  }
+}
+
+const APP_VERSION = 'v5';
+function setConn(ok, info){
+  const el = document.getElementById('conn');
+  if(!el) return;
+  const tail = SCRIPT_URL.slice(-12, -5);
+  if(ok){
+    el.style.background = '#E4EDF9'; el.style.color = '#052C60';
+    el.textContent = 'Connected ✓ · ' + info + ' tickets · ' + APP_VERSION;
+  } else {
+    el.style.background = '#FDE7E5'; el.style.color = '#8A1C14';
+    el.textContent = 'NOT connected · ' + info + ' · ' + APP_VERSION + ' · link ends ' + tail;
+  }
+}
+
+function jsonpFetch(url){
+  return new Promise((resolve, reject)=>{
+    const cbName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const script = document.createElement('script');
+    let done = false;
+    window[cbName] = function(data){
+      done = true;
+      resolve(data);
+      cleanup();
+    };
+    function cleanup(){
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+    script.onerror = function(){
+      if(!done){ reject(new Error('JSONP load failed')); cleanup(); }
+    };
+    script.src = url + (url.indexOf('?') > -1 ? '&' : '?') + 'callback=' + cbName + '&t=' + Date.now();
+    document.body.appendChild(script);
+    setTimeout(function(){ if(!done){ reject(new Error('JSONP timeout')); cleanup(); } }, 12000);
+  });
+}
+
+async function fetchTickets(){
+  if(SCRIPT_URL.indexOf('PASTE_YOUR') === 0){
+    toast('Backend not connected yet');
+    tickets = [];
+    refreshView();
+    return;
+  }
+  try{
+    const data = await jsonpFetch(SCRIPT_URL);
+    setConn(true, data.length);
+    tickets = data.map(t => ({
+      ...t,
+      created: Number(t.created),
+      supervisorTime: t.supervisorTime ? Number(t.supervisorTime) : null,
+      destinationTime: t.destinationTime ? Number(t.destinationTime) : null
+    }));
+    const byId = {};
+    tickets.forEach(t => byId[t.id] = t);
+    const now = Date.now();
+    Object.keys(recentSaves).forEach(id => {
+      if(now - recentSaves[id].at > 120000) delete recentSaves[id];
+      else byId[id] = recentSaves[id].t;
+    });
+    tickets = Object.keys(byId).map(id => byId[id]);
+  }catch(e){
+    setConn(false, String(e && e.message || e));
+    toast('Could not reach the server — check your connection');
+  }
+  refreshView();
+}
+
+function refreshView(){
+  if(openTicket) return;
+  if(role === 'checker'){
+    // keep the form exactly as the user left it; only redraw the list under it
+    const la = document.getElementById('listArea');
+    if(la) renderGroupedList(la, tickets.slice());
+    else render();
+  } else if(role === 'reports'){
+    if(window.__reportsUpdate) window.__reportsUpdate(); else render();
+  } else {
+    render();
+  }
+}
+
+const recentSaves = {};
+async function saveTicket(ticket){
+  recentSaves[ticket.id] = { t: JSON.parse(JSON.stringify(ticket)), at: Date.now() };
+  try{
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({ ticket })
+    });
+  }catch(e){
+    toast('Could not save — check your connection and try again');
+  }
+}
+
+function genId(){
+  const n = Math.floor(Math.random()*9000)+1000;
+  return 'TCK-' + Date.now().toString().slice(-5) + n;
+}
+function fmtTime(ts){
+  if(!ts) return '';
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+}
+function todayStr(){
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+function tagFor(status){
+  const map = {pending:'Awaiting approval', approved:'Approved · in transit', delivered:'Delivered', rejected:'Rejected'};
+  return `<span class="tag ${status}">${map[status]}</span>`;
+}
+function groupLabel(t){
+  if(t.size==='S/D') return 'Stone Dust';
+  if(t.size==='1/2') return 'Aggregate — 1/2"';
+  if(t.size==='3/4') return 'Aggregate — 3/4"';
+  if(t.size==='Mixed') return 'Mixed Aggregate';
+  return 'Other';
+}
+const GROUP_ORDER = ['Stone Dust','Aggregate — 1/2"','Aggregate — 3/4"','Mixed Aggregate'];
+
+function setRole(r){
+  role = r;
+  openTicket = null;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.role===r));
+  render();
+}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click', ()=>setRole(b.dataset.role)));
+
+function destOptions(){
+  return DESTINATIONS.map(d=>`<option>${d}</option>`).join('');
+}
+
+function render(){
+  const main = document.getElementById('main');
+  if(openTicket){ renderDetail(main); return; }
+  if(role === 'checker') renderChecker(main);
+  if(role === 'supervisor') renderSupervisor(main);
+  if(role === 'destination') renderDestination(main);
+  if(role === 'reports') renderReports(main);
+}
+
+function shareTicket(t, note){
+  const text = `${note}\nTriacta Nigeria Limited — Dispatch Ticket\n${t.id}\nDate: ${t.date}\nTruck: ${t.truck}\nLoad: ${t.type} (${t.size}) — ${t.qty} m3\nDestination: ${t.destination}\nStatus: ${t.status}`;
+  if(navigator.share){
+    navigator.share({ text }).catch(()=>{});
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  }
+}
+
+function fmtNum(n){
+  const r = Math.round((n + Number.EPSILON) * 100) / 100;
+  return r.toString();
+}
+function startOfWeekStr(){
+  const d = new Date();
+  const day = d.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + diff);
+  return monday.toISOString().slice(0,10);
+}
+function sumQty(list){
+  return list.reduce((s,t)=> s + (parseFloat(t.qty) || 0), 0);
+}
+function toCSV(list){
+  const header = ['Ticket ID','Date','Truck','Description','Size','Quantity (m3)','Destination','Status','Supervisor Signed At','Destination Signed At'];
+  const rows = list.map(t=>[
+    t.id, t.date, t.truck, t.type, t.size, t.qty, t.destination, t.status,
+    t.supervisorTime ? fmtTime(t.supervisorTime) : '',
+    t.destinationTime ? fmtTime(t.destinationTime) : ''
+  ]);
+  const esc = v => '"' + String(v==null ? '' : v).replace(/"/g,'""') + '"';
+  return [header, ...rows].map(r => r.map(esc).join(',')).join('\r\n');
+}
+function downloadCSV(list, filename){
+  const csv = toCSV(list);
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function renderTotals(container, list){
+  const today = todayStr();
+  const weekStart = startOfWeekStr();
+  const todayList = tickets.filter(t=>t.date===today);
+  const weekList = tickets.filter(t=>t.date>=weekStart);
+  const byGroup = {};
+  list.forEach(t=>{
+    const g = groupLabel(t);
+    byGroup[g] = (byGroup[g] || 0) + (parseFloat(t.qty) || 0);
+  });
+  container.innerHTML = `
+    <div class="row2" style="margin-bottom:12px;">
+      <div class="stat"><div class="stat-num">${fmtNum(sumQty(todayList))}</div><div class="stat-label">m&sup3; today (all sites)</div></div>
+      <div class="stat"><div class="stat-num">${fmtNum(sumQty(weekList))}</div><div class="stat-label">m&sup3; this week (all sites)</div></div>
+    </div>
+    <div class="detail-row"><span class="k">Total in current filter</span><span>${fmtNum(sumQty(list))} m&sup3;</span></div>
+    ${Object.keys(byGroup).map(g=>`<div class="detail-row"><span class="k">${g}</span><span>${fmtNum(byGroup[g])} m&sup3;</span></div>`).join('')}
+  `;
+}
+
+function renderReports(main){
+  main.innerHTML = `
+    <div class="section-title">Search &amp; filter</div>
+    <div class="row2">
+      <div class="field"><label>From date</label><input type="date" id="r-from"></div>
+      <div class="field"><label>To date</label><input type="date" id="r-to"></div>
+    </div>
+    <div class="field"><label>Truck reg contains</label><input type="text" id="r-truck" placeholder="e.g. KA-113X"></div>
+    <div class="row2">
+      <div class="field"><label>Destination</label><select id="r-dest"></select></div>
+      <div class="field"><label>Description</label><select id="r-type">
+        <option>All</option><option>Aggregate</option><option>Stone Dust</option><option>Mixed Aggregate</option>
+      </select></div>
+    </div>
+    <button class="btn secondary" id="clearFilters">Clear filters</button>
+
+    <div class="section-title">Totals</div>
+    <div id="totalsArea"></div>
+
+    <button class="btn" id="exportBtn">Export to Excel (CSV)</button>
+
+    <div class="section-title">Matching tickets (<span id="matchCount">0</span>)</div>
+    <div id="reportList"></div>
+  `;
+  document.getElementById('r-dest').innerHTML = '<option>All</option>' + destOptions();
+
+  function currentFilters(){
+    return {
+      from: document.getElementById('r-from').value,
+      to: document.getElementById('r-to').value,
+      truck: document.getElementById('r-truck').value.trim().toLowerCase(),
+      dest: document.getElementById('r-dest').value,
+      type: document.getElementById('r-type').value
+    };
+  }
+  function updateResults(){
+    const f = currentFilters();
+    const list = tickets.filter(t=>{
+      if(f.from && t.date < f.from) return false;
+      if(f.to && t.date > f.to) return false;
+      if(f.truck && !t.truck.toLowerCase().includes(f.truck)) return false;
+      if(f.dest !== 'All' && t.destination !== f.dest) return false;
+      if(f.type !== 'All' && t.type !== f.type) return false;
+      return true;
+    });
+    document.getElementById('matchCount').textContent = list.length;
+    renderTotals(document.getElementById('totalsArea'), list);
+    renderGroupedList(document.getElementById('reportList'), list);
+    document.getElementById('exportBtn').onclick = ()=>downloadCSV(list, 'triacta-dispatch-records.csv');
+  }
+  ['r-from','r-to','r-dest','r-type'].forEach(id=>document.getElementById(id).addEventListener('change', updateResults));
+  document.getElementById('r-truck').addEventListener('input', updateResults);
+  document.getElementById('clearFilters').addEventListener('click', ()=>{
+    document.getElementById('r-from').value = '';
+    document.getElementById('r-to').value = '';
+    document.getElementById('r-truck').value = '';
+    document.getElementById('r-dest').value = 'All';
+    document.getElementById('r-type').value = 'All';
+    updateResults();
+  });
+  window.__reportsUpdate = updateResults;
+  updateResults();
+}
+
+/* ---------- Grouped list rendering ---------- */
+function renderGroupedList(container, list){
+  container.innerHTML = '';
+  if(!list.length){ container.innerHTML = '<div class="empty">Nothing here yet.</div>'; return; }
+  const byGroup = {};
+  list.forEach(t=>{
+    const g = groupLabel(t);
+    if(!byGroup[g]) byGroup[g] = [];
+    byGroup[g].push(t);
+  });
+  const order = GROUP_ORDER.filter(g=>byGroup[g]).concat(Object.keys(byGroup).filter(g=>!GROUP_ORDER.includes(g)));
+  order.forEach(g=>{
+    const grp = document.createElement('div');
+    grp.className = 'group';
+    grp.innerHTML = `<div class="group-head"><span>${g}</span><span>${byGroup[g].length}</span></div><div class="group-body"></div>`;
+    const body = grp.querySelector('.group-body');
+    byGroup[g].sort((a,b)=>b.created-a.created).forEach(t=>body.appendChild(stubEl(t)));
+    container.appendChild(grp);
+  });
+}
+
+/* ---------- Checker ---------- */
+function renderChecker(main){
+  main.innerHTML = `
+    <div class="field">
+      <label>Date</label>
+      <input type="date" id="f-date" value="${todayStr()}">
+    </div>
+    <div class="field">
+      <label>Truck / tipper reg number</label>
+      <input type="text" id="f-truck" placeholder="e.g. KA-113X">
+      <div class="err" id="err-truck">Enter the vehicle number</div>
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <select id="f-type">
+        <option>Aggregate</option>
+        <option>Stone Dust</option>
+        <option>Mixed Aggregate</option>
+      </select>
+    </div>
+    <div class="field" id="sizeWrap">
+      <label>Size</label>
+      <select id="f-size">
+        <option value="1/2">1/2</option>
+        <option value="3/4">3/4</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Quantity (m³)</label>
+      <input type="text" inputmode="decimal" id="f-qty" placeholder="e.g. 15">
+      <div class="err" id="err-qty">Enter a quantity</div>
+    </div>
+    <div class="field">
+      <label>Destination</label>
+      <select id="f-dest">${destOptions()}</select>
+    </div>
+    <button class="btn" id="createBtn">Create ticket</button>
+
+    <div class="section-title">Tickets you've created</div>
+    <div id="listArea"></div>
+  `;
+  const typeSel = document.getElementById('f-type');
+  const sizeWrap = document.getElementById('sizeWrap');
+  function syncSize(){ sizeWrap.style.display = typeSel.value === 'Aggregate' ? 'block' : 'none'; }
+  typeSel.addEventListener('change', syncSize);
+  syncSize();
+
+  renderGroupedList(document.getElementById('listArea'), tickets.slice());
+
+  document.getElementById('createBtn').addEventListener('click', async ()=>{
+    const truck = document.getElementById('f-truck').value.trim();
+    const qty = document.getElementById('f-qty').value.trim();
+    document.getElementById('err-truck').style.display = truck ? 'none' : 'block';
+    document.getElementById('err-qty').style.display = qty ? 'none' : 'block';
+    if(!truck || !qty) return;
+    const type = typeSel.value;
+    let size = 'Mixed';
+    if(type === 'Stone Dust') size = 'S/D';
+    else if(type === 'Aggregate') size = document.getElementById('f-size').value;
+    else size = 'Mixed';
+    const ticket = {
+      id: genId(),
+      created: Date.now(),
+      date: document.getElementById('f-date').value || todayStr(),
+      truck,
+      type,
+      size,
+      qty,
+      destination: document.getElementById('f-dest').value,
+      status: 'pending',
+      supervisorSig: null, supervisorTime: null,
+      destinationSig: null, destinationTime: null,
+      rejectReason: null
+    };
+    tickets.push(ticket);
+    await saveTicket(ticket);
+    toast('Ticket ' + ticket.id + ' created');
+    render();
+    fetchTickets();
+  });
+}
+
+/* ---------- Supervisor ---------- */
+function renderSupervisor(main){
+  const pending = tickets.filter(t=>t.status==='pending');
+  const others = tickets.filter(t=>t.status!=='pending').sort((a,b)=>b.created-a.created).slice(0,20);
+  main.innerHTML = `
+    <div class="section-title">Awaiting your approval (${pending.length})</div>
+    <div id="pendList"></div>
+    <div class="section-title">Recent</div>
+    <div id="otherList"></div>
+  `;
+  renderGroupedList(document.getElementById('pendList'), pending);
+  renderGroupedList(document.getElementById('otherList'), others);
+}
+
+/* ---------- Destination ---------- */
+function renderDestination(main){
+  const approved = tickets.filter(t=>t.status==='approved');
+  const others = tickets.filter(t=>t.status==='delivered'||t.status==='rejected').sort((a,b)=>b.created-a.created).slice(0,20);
+  main.innerHTML = `
+    <div class="section-title">Awaiting arrival (${approved.length})</div>
+    <div id="apprList"></div>
+    <div class="section-title">Recent</div>
+    <div id="doneList"></div>
+  `;
+  renderGroupedList(document.getElementById('apprList'), approved);
+  renderGroupedList(document.getElementById('doneList'), others);
+}
+
+function stubEl(t){
+  const div = document.createElement('div');
+  div.className = 'stub';
+  div.innerHTML = `
+    <div class="stub-top">
+      <span class="stub-id">${t.id}</span>
+      <span class="stub-time">${t.date || fmtTime(t.created)}</span>
+    </div>
+    <div class="stub-body">
+      <div><span class="k">Truck</span> ${t.truck}</div>
+      <div><span class="k">Load</span> ${t.type} (${t.size}) · ${t.qty} m³ → ${t.destination}</div>
+      <div style="margin-top:6px;">${tagFor(t.status)}</div>
+    </div>
+  `;
+  div.addEventListener('click', ()=>{ openTicket = t.id; render(); });
+  return div;
+}
+
+/* ---------- Signature pad ---------- */
+function mountSignaturePad(canvasId){
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * 2;
+    canvas.height = rect.height * 2;
+    ctx.scale(2,2);
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#0B0E14';
+  }
+  resize();
+  let drawing = false, last = null;
+  function pos(e){
+    const rect = canvas.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return { x: p.clientX - rect.left, y: p.clientY - rect.top };
+  }
+  function start(e){ drawing = true; last = pos(e); e.preventDefault(); }
+  function move(e){
+    if(!drawing) return;
+    const p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+    last = p; e.preventDefault();
+  }
+  function end(){ drawing = false; }
+  canvas.addEventListener('pointerdown', start);
+  canvas.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', end);
+  return {
+    clear(){ ctx.clearRect(0,0,canvas.width,canvas.height); },
+    isEmpty(){
+      const blank = document.createElement('canvas');
+      blank.width = canvas.width; blank.height = canvas.height;
+      return canvas.toDataURL() === blank.toDataURL();
+    },
+    dataUrl(){
+      const w = 320, hgt = Math.round(canvas.height * (w / canvas.width));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = hgt;
+      const x = c.getContext('2d');
+      x.fillStyle = '#ffffff'; x.fillRect(0,0,w,hgt);
+      x.drawImage(canvas, 0, 0, w, hgt);
+      return c.toDataURL('image/jpeg', 0.6);
+    }
+  };
+}
+
+/* ---------- Detail / approve / confirm ---------- */
+function renderDetail(main){
+  const t = tickets.find(x=>x.id===openTicket);
+  if(!t){ openTicket=null; render(); return; }
+  let actions = '';
+  if(role==='supervisor' && t.status==='pending'){
+    actions = `
+      <div class="field" style="margin-top:14px;">
+        <label>Sign to approve</label>
+        <div class="sigwrap"><canvas id="sigPad"></canvas></div>
+        <div class="sigrow"><button type="button" id="sigClear">Clear</button></div>
+        <div class="err" id="err-sig">Please sign before approving</div>
+      </div>
+      <button class="btn" id="approveBtn">Approve and sign</button>
+      <button class="btn dark" id="rejectBtn">Reject</button>
+    `;
+  } else if(role==='destination' && t.status==='approved'){
+    actions = `
+      <div class="field" style="margin-top:14px;">
+        <label>Sign to confirm receipt</label>
+        <div class="sigwrap"><canvas id="sigPad"></canvas></div>
+        <div class="sigrow"><button type="button" id="sigClear">Clear</button></div>
+        <div class="err" id="err-sig">Please sign before confirming</div>
+      </div>
+      <button class="btn" id="receiveBtn">Confirm received and sign</button>
+    `;
+  }
+  let notifyBtn = '';
+  if(role === 'checker' && t.status === 'pending'){
+    notifyBtn = `<button class="btn secondary" id="notifyBtn" style="margin-top:14px;">Notify supervisor (WhatsApp)</button>`;
+  } else if(role === 'supervisor' && t.status === 'approved'){
+    notifyBtn = `<button class="btn secondary" id="notifyBtn" style="margin-top:14px;">Notify destination (WhatsApp)</button>`;
+  }
+  main.innerHTML = `
+    <button class="backbtn" id="backBtn">&larr; back to list</button>
+    <div class="detail">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;color:var(--blue-dark);">${t.id}</span>
+        ${tagFor(t.status)}
+      </div>
+      <div class="detail-row"><span class="k">Date</span><span>${t.date}</span></div>
+      <div class="detail-row"><span class="k">Truck / tipper</span><span>${t.truck}</span></div>
+      <div class="detail-row"><span class="k">Description</span><span>${t.type}</span></div>
+      <div class="detail-row"><span class="k">Size</span><span>${t.size}</span></div>
+      <div class="detail-row"><span class="k">Quantity</span><span>${t.qty} m³</span></div>
+      <div class="detail-row"><span class="k">Destination</span><span>${t.destination}</span></div>
+      ${t.rejectReason ? `<div class="detail-row"><span class="k">Reject reason</span><span>${t.rejectReason}</span></div>` : ''}
+      <div class="signoff">
+        <div>Checker: recorded ${fmtTime(t.created)}</div>
+        <div class="${t.supervisorSig ? 'done' : ''}">Supervisor: ${t.supervisorSig ? ('signed ' + fmtTime(t.supervisorTime)) : 'awaiting approval'}
+          ${t.supervisorSig ? `<img src="${t.supervisorSig}">` : ''}</div>
+        <div class="${t.destinationSig ? 'done' : ''}">Destination: ${t.destinationSig ? ('signed ' + fmtTime(t.destinationTime)) : 'awaiting receipt'}
+          ${t.destinationSig ? `<img src="${t.destinationSig}">` : ''}</div>
+      </div>
+      ${notifyBtn}
+      <button class="btn secondary" id="printBtn" style="margin-top:14px;">Print waybill</button>
+      ${actions}
+    </div>
+  `;
+  document.getElementById('backBtn').addEventListener('click', ()=>{ openTicket=null; render(); });
+  const nb = document.getElementById('notifyBtn');
+  if(nb){
+    nb.addEventListener('click', ()=>{
+      const note = role === 'checker'
+        ? 'New dispatch ticket awaiting your approval:'
+        : 'Truck approved and on the way:';
+      shareTicket(t, note);
+    });
+  }
+  const printBtn = document.getElementById('printBtn');
+  const canPrint = role === 'supervisor' && (t.status === 'approved' || t.status === 'delivered');
+  if(canPrint){
+    printBtn.addEventListener('click', ()=>printTicket(t));
+  } else {
+    printBtn.remove();
+  }
+
+  let pad = null;
+  if(document.getElementById('sigPad')){
+    pad = mountSignaturePad('sigPad');
+    document.getElementById('sigClear').addEventListener('click', ()=>pad.clear());
+  }
+
+  const approveBtn = document.getElementById('approveBtn');
+  if(approveBtn) approveBtn.addEventListener('click', async ()=>{
+    if(pad.isEmpty()){ document.getElementById('err-sig').style.display='block'; return; }
+    t.status = 'approved';
+    t.supervisorSig = pad.dataUrl();
+    t.supervisorTime = Date.now();
+    await saveTicket(t);
+    toast('Approved and signed');
+    render();
+    fetchTickets();
+  });
+  const rejectBtn = document.getElementById('rejectBtn');
+  if(rejectBtn) rejectBtn.addEventListener('click', async ()=>{
+    const reason = prompt('Reason for rejecting this ticket:');
+    if(reason===null) return;
+    t.status = 'rejected';
+    t.rejectReason = reason || 'No reason given';
+    await saveTicket(t);
+    toast('Ticket rejected');
+    render();
+    fetchTickets();
+  });
+  const receiveBtn = document.getElementById('receiveBtn');
+  if(receiveBtn) receiveBtn.addEventListener('click', async ()=>{
+    if(pad.isEmpty()){ document.getElementById('err-sig').style.display='block'; return; }
+    t.status = 'delivered';
+    t.destinationSig = pad.dataUrl();
+    t.destinationTime = Date.now();
+    await saveTicket(t);
+    toast('Marked delivered and signed');
+    render();
+    fetchTickets();
+  });
+}
+
+function printTicket(t){
+  document.getElementById('pt-id').textContent = t.id + '  ·  ' + t.date;
+  document.getElementById('pt-body').innerHTML = `
+    <div class="pt-row"><span>Truck / tipper</span><span>${t.truck}</span></div>
+    <div class="pt-row"><span>Description</span><span>${t.type}</span></div>
+    <div class="pt-row"><span>Size</span><span>${t.size}</span></div>
+    <div class="pt-row"><span>Quantity</span><span>${t.qty} m³</span></div>
+    <div class="pt-row"><span>Destination</span><span>${t.destination}</span></div>
+    <div class="pt-row"><span>Status</span><span>${t.status}</span></div>
+  `;
+  document.getElementById('pt-checker').textContent = fmtTime(t.created);
+  document.getElementById('pt-supervisor').innerHTML = t.supervisorSig ? `<img src="${t.supervisorSig}">` : `<div class="blank"></div>`;
+  document.getElementById('pt-destination').innerHTML = t.destinationSig ? `<img src="${t.destinationSig}">` : `<div class="blank"></div>`;
+  document.getElementById('printArea').style.display = 'block';
+  window.print();
+  document.getElementById('printArea').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
